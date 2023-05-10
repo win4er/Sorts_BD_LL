@@ -162,6 +162,7 @@ int main(int argc, char** argv) {
 
 	BDSort bd;
 	bd.openBd("main.bd");
+	bd.create_tabs();
 	if (__meas) {
 		bd.INSERT(__steps, __size, __sorts, sorts_args);
 	}
