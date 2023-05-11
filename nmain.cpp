@@ -36,7 +36,7 @@ bool equal(const char* str1, const char* str2){
 }
 
 int str_to_int(const char* str) {
-	int integer;
+	int integer = 0;
 	int len = len_str(str);
 	for (int i = 0; i < len; i++) {
 		switch (str[len-i-1]) {
@@ -93,6 +93,7 @@ int main(int argc, char** argv) {
 	int sorts_args = 6;
 	const char* __sorts [sorts_args] = {"bubble", "quick", "insertion", "selection", "merge", "count"};
 	int __size = 1000;
+	bool flag_steps = true;
 	int __steps = __size;
 	int __meas = 0;
 	int __list = 0;
@@ -139,27 +140,33 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
-		if (equal(argv[i], "--steps")) {	
+		if (equal(argv[i], "--steps")) {
+			flag_steps = false;
 			int j = i;
 			while ((j+1) < argc and is_param(argv[j + 1]) == false) {
 				j += 1;
 			}
 			int steps_args = j - i;
 			if (steps_args != 1) {
-				std::cerr << "warning: --steps=1000" << std::endl;
+				std::cerr << "warning: --steps=--size" << std::endl;
+				__steps = __size;
 			} 
 			else {
 				__steps = str_to_int(argv[i+1]);
 				if (__steps == 0) {
-					std::cerr << "warning: --steps=1000" << std::endl;
-					__steps = 1000;
+					std::cerr << "warning: --steps=--size" << std::endl;
+					__steps = __size;
 				}
 			}
 		}
 	}
-	
-	
 
+	if (flag_steps) {
+		__steps = __size;
+	}
+
+	
+	
 	BDSort bd;
 	bd.openBd("main.bd");
 	bd.create_tabs();

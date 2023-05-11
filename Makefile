@@ -19,4 +19,4 @@ sorts.o: sorts.cpp
 	g++ -c sorts.cpp
 
 clean:
-	rm -rf *.o *.exe 
+	rm -rf *.o *.exe  
