@@ -4,7 +4,7 @@
 BDRequest::BDRequest() {}
 BDRequest::~BDRequest() {}
 
-int callback(void* outputStruct, int countRec, char** argv, char** colName) {
+int callback_out(void* outputStruct, int countRec, char** argv, char** colName) {
     //void* -- c-style
     //outputStructure allow to return back the data for processing....
     for (int i = 0; i < countRec; i++) {
@@ -20,8 +20,8 @@ void BDRequest::testBd() {
     request_insert_create("create TABLE IF NOT EXISTS temp(id integer primary key autoincrement, name varchar(32));");
     request_insert_create("INSERT INTO temp(name) VALUES ('test'),('test1'),('test2'),('test3');");
 
-    request_select("SELECT count() FROM `temp`", callback);
-    request_select("SELECT * FROM temp;", callback);
+    request_select("SELECT count() FROM `temp`", callback_out);
+    request_select("SELECT * FROM temp;", callback_out);
 
     closeBd();
 }

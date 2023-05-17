@@ -5,16 +5,11 @@ BDSort::BDSort() {}
 BDSort::~BDSort() {}
 
 
-int BDSort::len_str(const char* str) {
-	int ind = -1;
-	while (str[++ind] != '\0');
-	return ind;
-}
 
 
 void BDSort::conc(const char* str1, const char* str2, char* str3) {
-	int len1 = len_str(str1);
-	int len2 = len_str(str2);
+	int len1 = strlen(str1);
+	int len2 = strlen(str2);
 	for (int i = 0; i < len1; i++) {
 		str3[i] = str1[i];
 	}
@@ -80,8 +75,8 @@ void BDSort::auto_to_str(double obj, char* str){
 
 
 bool BDSort::equal(const char* str1, const char* str2){
-	int len1 = len_str(str1);
-	int len2 = len_str(str2);
+	int len1 = strlen(str1);
+	int len2 = strlen(str2);
 	if (len1 == len2) {
 		for (int i = 0; i < len1; i++) {
 			if (str1[i] != str2[i]) {
@@ -116,9 +111,35 @@ double BDSort::time_test(void (*sort)(int*, int), int size) {
 }
 
 
+
+
+void BDSort::select_info(int size, const char* name_sort, int (*callback)(void*, int, char**, char**)) {
+	const char* part1 = "select Sorts.nameSort, SizeArs.sizeAr, ResSorts.durSort_ms from ResSorts, Sorts, SizeArs where ResSorts.idSort = Sorts.id and ResSorts.idSizeAr = SizeArs.id and SizeArs.sizeAr = ";
+	
+	char size_str [len_auto(size) + 1];
+	auto_to_str(size, size_str);
+
+	char part2 [strlen(part1) + strlen(size_str) + 1];
+	conc(part1, size_str, part2);
+
+	const char* last_condition = " and Sorts.nameSort = ";
+
+	char part3 [strlen(part2) +strlen(last_condition) + 1];
+	conc(part2, last_condition, part3);
+	
+	char req_all_info [strlen(part3) + strlen(name_sort) + 1];
+	conc(part3, name_sort, req_all_info);
+	
+	request_select(req_all_info, callback);
+}
+
+
+
 void BDSort::insert_info(int size, const char* name, void (*sort)(int*, int)) {
+	
+
 	const char* part1 = "insert into Sorts(nameSort) VALUES ";
-	char req_name_sort [len_str(part1) + len_str(name) + 1];
+	char req_name_sort [strlen(part1) + strlen(name) + 1];
 	conc(part1, name, req_name_sort);
 	request_insert_create(req_name_sort);
 
@@ -128,10 +149,10 @@ void BDSort::insert_info(int size, const char* name, void (*sort)(int*, int)) {
 	char str_size [len_auto(size) + 1];
 	auto_to_str(size, str_size);
 	
-	char part3 [len_auto(size) + len_str(part2) + 1]; 
+	char part3 [len_auto(size) + strlen(part2) + 1]; 
 	conc(part2, str_size, part3);
 
-	char req_size_ar [len_str(part3) + len_str(");") + 1];
+	char req_size_ar [strlen(part3) + strlen(");") + 1];
 	conc(part3, ");", req_size_ar);
 
 	request_insert_create(req_size_ar);
@@ -147,50 +168,29 @@ void BDSort::insert_info(int size, const char* name, void (*sort)(int*, int)) {
 
 	const char* part5 = "insert into ResSorts(idSort, idSizeAr, durSort_ms) VALUES (";
 
-	char part6 [len_str(part5) + len_str(id_sort_str) + 1];
+	char part6 [strlen(part5) + strlen(id_sort_str) + 1];
 	conc(part5, id_sort_str, part6);
 
-	char part7 [len_str(part6) + len_str(", ") + 1];
+	char part7 [strlen(part6) + strlen(", ") + 1];
 	conc(part6, ", ", part7);
 
-	char part8 [len_str(part7) + len_str(id_size_ar_str) + 1];
+	char part8 [strlen(part7) + strlen(id_size_ar_str) + 1];
 	conc(part7, id_size_ar_str, part8);
 
-	char part9 [len_str(part8) + len_str(", ") + 1];
+	char part9 [strlen(part8) + strlen(", ") + 1];
 	conc(part8, ", ", part9);
 
 	char dur_str [len_auto(duration) + 1];
 	auto_to_str(duration, dur_str);
 
-	char part10 [len_str(part9) + len_str(dur_str) + 1];
+	char part10 [strlen(part9) + strlen(dur_str) + 1];
 	conc(part9, dur_str, part10);
 
 	
-	char part11 [len_str(part10) + len_str(");") + 1];
+	char part11 [strlen(part10) + strlen(");") + 1];
 	conc(part10, ");", part11);
 
 	request_insert_create(part11);
-}
-
-
-void BDSort::select_info(int size, const char* name_sort) {
-	const char* part1 = "select * from ResSorts, Sorts, SizeArs where ResSorts.idSort = Sorts.id and ResSorts.idSizeAr = SizeArs.id and SizeArs.sizeAr = ";
-	
-	char size_str [len_auto(size) + 1];
-	auto_to_str(size, size_str);
-
-	char part2 [len_str(part1) + len_str(size_str) + 1];
-	conc(part1, size_str, part2);
-
-	const char* last_condition = " and Sorts.nameSort = ";
-
-	char part3 [len_str(part2) + len_str(last_condition) + 1];
-	conc(part2, last_condition, part3);
-	
-	char req_all_info [len_str(part3) + len_str(name_sort) + 1];
-	conc(part3, name_sort, req_all_info);
-	
-	request_select(req_all_info, callback);
 }
 
 
@@ -227,22 +227,22 @@ void BDSort::SELECT(int __steps, int __size, const char** __sorts, int sorts_arg
 	while (size_ar <= __size) {
 		for (int i = 0; i < sorts_args; i++) {
 			if (equal("bubble", __sorts[i])) {
-				select_info(size_ar, names_sorts[0]);
+				select_info(size_ar, names_sorts[0], callback_out);
 			}
 			if (equal("quick", __sorts[i])) {
-				select_info(size_ar, names_sorts[4]);
+				select_info(size_ar, names_sorts[4], callback_out);
 			}
 			if (equal("insertion", __sorts[i])) {
-				select_info(size_ar, names_sorts[2]);
+				select_info(size_ar, names_sorts[2], callback_out);
 			}
 			if (equal("selection", __sorts[i])) {
-				select_info(size_ar, names_sorts[1]);
+				select_info(size_ar, names_sorts[1], callback_out);
 			}
 			if (equal("merge", __sorts[i])) {
-				select_info(size_ar, names_sorts[5]);
+				select_info(size_ar, names_sorts[5], callback_out);
 			}
 			if (equal("count", __sorts[i])) {
-				select_info(size_ar, names_sorts[3]);
+				select_info(size_ar, names_sorts[3], callback_out);
 			}
 		}
 		size_ar += __steps;

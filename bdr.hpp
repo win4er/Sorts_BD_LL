@@ -7,7 +7,7 @@
 
 #include "sqlite3.h"
 
-int callback(void* outputStruct, int countRec, char** argv, char** colName);
+int callback_out(void* outputStruct, int countRec, char** argv, char** colName);
 
 class BDRequest {
 	private:
