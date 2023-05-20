@@ -1,6 +1,6 @@
-*.swp
+.*.swp
 test
 *.o
 *.out
-*.swo.*
+.*.swo.*
 test
