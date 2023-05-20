@@ -1,19 +1,6 @@
 #include "bds.hpp"
 class Args {
 	private:
-		void conc(const char* str1, const char* str2, char* str3) {
-			int len1 = strlen(str1);
-			int len2 = strlen(str2);
-			for (int i = 0; i < len1; i++) {
-				str3[i] = str1[i];
-			}
-			int j = 0;
-			for (int i = len1; i < len1 + len2; i++) {
-				str3[i] = str2[j++];
-			}
-			str3[len1 + j] = '\0';
-		}
-
 		bool equal(const char* str1, const char* str2){
 			int len1 = strlen(str1);
 			int len2 = strlen(str2);
@@ -29,19 +16,6 @@ class Args {
 				return false;
 			}
 		}
-
-		int str_to_int(const char* str) {
-			int integer = 0;
-			int len = strlen(str);
-			int k = 1;
-			for (int i = 0; i < len; i++) {
-				integer += k * (str[len-1-i] - '0');
-				k *= 10;
-			}
-			return integer;
-		}
-
-
 		bool is_param(const char* obj) {
 			const char* params[6] = {"--meas", "--size", "--steps", "--sorts", "--list", "--export"};
 			for (int i=0; i < 6; i++) {
@@ -51,13 +25,11 @@ class Args {
 			}
 			return false;
 		}
-
 	public:
 		void run(int argc, char** argv, const char* name_bd) {
-			int sorts_args = 6;
-			const char* __sorts [sorts_args] = {"bubble", "quick", "insertion", "selection", "merge", "count"};
+			int sorts_amount = 6;
+			int __sorts [sorts_amount] = {-1, -1, -1, -1, -1, -1}; //bubble, quick, isertion, selection, merge, count
 			int __size = 1000;
-			bool flag_steps = true;
 			int __steps = __size;
 			int __meas = 0;
 			int __list = 0;
@@ -77,68 +49,62 @@ class Args {
 					while ((j+1) < argc and is_param(argv[j + 1]) == false) {
 						j += 1;
 					}
-					sorts_args = j - i;
-					if (not(sorts_args == 1 and equal(argv[i+sorts_args], "all"))){
-						for (int j=0; j < sorts_args; j++) {
-							__sorts[j] = argv[i+j+1];
+					sorts_amount = j - i;
+					if (sorts_amount == 1 and equal(argv[i+1], "all")) {
+						sorts_amount = 6;
+						for (int j=0; i < 6; i++) {
+							__sorts[j] = 0;
 						}
-					}
-					else {
-						sorts_args = 6;
-					}
-				}
-				if (equal(argv[i], "--size")) {	
-					int j = i;
-					while ((j+1) < argc and is_param(argv[j + 1]) == false) {
-						j += 1;
-					}
-					int size_args = j - i;
-					if (size_args != 1) {
-						std::cerr << "warning: --size=1000" << std::endl;
 					} 
 					else {
-						__size = str_to_int(argv[i+1]);
-						if (__size == 0) {
-							std::cerr << "warning: --size=1000" << std::endl;
-							__size = 1000;
+						for (int l=0; l < sorts_amount; l++) {
+							if (equal("bubble", argv[l+i+1])) {
+								__sorts[0] = 0;
+							}
+							if (equal("quick", argv[l+i+1])) {
+								__sorts[1] = 0;
+							}
+							if (equal("insertion", argv[l+i+1])) {
+								__sorts[2] = 0;
+							}
+							if (equal("selection", argv[l+i+1])) {
+								__sorts[3] = 0;
+							}
+							if (equal("merge", argv[l+i+1])) {
+								__sorts[4] = 0;
+							}
+							if (equal("count", argv[l+i+1])) {
+								__sorts[5] = 0;
+							}
 						}
+					}
+				}
+				if (equal(argv[i], "--size")) {
+					if (i+1 < argc and is_param(argv[i+1]) == false) {
+						__size = atoi(argv[i+1]);
 					}
 				}
 				if (equal(argv[i], "--steps")) {
-					flag_steps = false;
-					int j = i;
-					while ((j+1) < argc and is_param(argv[j + 1]) == false) {
-						j += 1;
-					}
-					int steps_args = j - i;
-					if (steps_args != 1) {
-						std::cerr << "warning: --steps=--size" << std::endl;
-						__steps = __size;
-					} 
-					else {
-						__steps = str_to_int(argv[i+1]);
-						if (__steps == 0) {
-							std::cerr << "warning: --steps=--size" << std::endl;
-							__steps = __size;
-						}
+					if (i+1 < argc and is_param(argv[i+1]) == false) {
+						__steps = atoi(argv[i+1]);
 					}
 				}
 			}
-
-			if (flag_steps) {
-				__steps = __size;
-			}
-
-	
 	
 			BDSort bd;
 			bd.openBd(name_bd);
 			bd.create_tabs();
+			/*
+			std::cout << "__meas " << __meas << "\n__size " << __size << "\n__steps " << __steps << "\n__list " << __list << "\n__export " << __export << '\n';
+			for(int i = 0; i < 6; i++) {
+				std::cout << __sorts[i] << '\t';
+			}
+			std::cout << std::endl;*/
 			if (__meas) {
-				bd.INSERT(__steps, __size, __sorts, sorts_args);
+				bd.INSERT(__steps, __size, &__sorts[0]);
 			}
 			if (__list) {
-				bd.SELECT(__steps, __size, __sorts, sorts_args);
+				bd.SELECT(__steps, __size, &__sorts[0]);
 			}
 			bd.closeBd();
 		}	
