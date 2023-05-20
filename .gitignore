@@ -1,0 +1,6 @@
+.*.*.swp
+test
+*.o
+*.out
+.*.swo.*
+test

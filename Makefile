@@ -1,10 +1,10 @@
-all: test
+all: a.out 
 
-test: nmain.o sqlite3.o bdr.o bds.o sorts.o
-	g++ nmain.o sqlite3.o bdr.o bds.o sorts.o -o test -ldl -lpthread
+a.out: main.o sqlite3.o bdr.o bds.o sorts.o
+	g++ main.o sqlite3.o bdr.o bds.o sorts.o -o a.out -ldl -lpthread
 	
-nmain.o: nmain.cpp
-	g++ -c nmain.cpp
+nmain.o: main.cpp
+	g++ -c main.cpp
 	
 sqlite3.o: sqlite3.c
 	gcc -c sqlite3.c -ldl -lpthread
