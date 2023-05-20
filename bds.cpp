@@ -133,7 +133,6 @@ void BDSort::INSERT(int __steps, int __size, int* __sorts) {
 
 void BDSort::SELECT(int __steps, int __size, int* __sorts) {
 	int size_ar = __steps;
-	int* output;
 	while (size_ar <= __size) {
 		for (int i = 0; i < 6; i++) {
 			if (__sorts[i] == 0) {

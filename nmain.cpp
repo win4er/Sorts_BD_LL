@@ -34,6 +34,7 @@ class Args {
 			int __meas = 0;
 			int __list = 0;
 			int __export = 0;
+			int flag = 1;
 			for (int i = 1; i < argc; i++) {
 				if (equal(argv[i], "--meas")) {
 					__meas = 1;
@@ -45,6 +46,7 @@ class Args {
 					__export = 1;
 				}
 				if (equal(argv[i], "--sorts")) {
+					flag = 0;
 					int j = i;
 					while ((j+1) < argc and is_param(argv[j + 1]) == false) {
 						j += 1;
@@ -52,7 +54,7 @@ class Args {
 					sorts_amount = j - i;
 					if (sorts_amount == 1 and equal(argv[i+1], "all")) {
 						sorts_amount = 6;
-						for (int j=0; i < 6; i++) {
+						for (int j=0; j < 6; j++) {
 							__sorts[j] = 0;
 						}
 					} 
@@ -94,7 +96,13 @@ class Args {
 			BDSort bd;
 			bd.openBd(name_bd);
 			bd.create_tabs();
-			/*
+			
+			if (flag) {
+				for (int i = 0; i < 6; i++) {
+					__sorts[i] = 0;
+				}
+			}
+/*			
 			std::cout << "__meas " << __meas << "\n__size " << __size << "\n__steps " << __steps << "\n__list " << __list << "\n__export " << __export << '\n';
 			for(int i = 0; i < 6; i++) {
 				std::cout << __sorts[i] << '\t';
